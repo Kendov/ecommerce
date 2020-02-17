@@ -202,7 +202,7 @@ $app->post("/admin/forgot/reset", function(){
 	$page->setTpl("forgot-reset-success");
 });
 
-// categories
+// categories admin CRUD
 
 $app->get("/admin/categories", function(){
 	User::verifyLogin();
@@ -280,6 +280,17 @@ $app->post("/admin/categories/:idcategory", function($idcategory){
 	exit;
 });
 
+//categories pages
+$app->get("/categories/:idcategory", function($idcategory){
+	$category = new Category();
+	$category->get((int)$idcategory);
+
+	$page = new Page();
+	$page->setTpl("category", [
+		'category'=>$category->getValues(),
+		'products'=>[]
+	]);
+});
 
 
 $app->run();
