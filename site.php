@@ -3,6 +3,7 @@ use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
 use \Hcode\Model\Cart;
+use \Hcode\Model\Address;
 
 
 $app->get('/', function() {
@@ -57,8 +58,8 @@ $app->get("/products/:desurl", function($desurl){
 
 $app->get("/cart", function(){
 	$cart = Cart::getFromSession();
-
 	$page = new Page();
+	
 	$page->setTpl("cart", [
 		'cart'=>$cart->getValues(),
 		'products'=> $cart->getProducts(),
@@ -120,6 +121,19 @@ $app->post("/cart/freight", function(){
 
 	header("Location: /cart");
 	exit;
+});
+
+//user login checkout
+$app->get("/checkout", function(){
+	$cart = Cart::getFromSession();
+
+	$address = new Address();
+
+	$page = new Page();
+	$page->setTpl("checkout", [
+		'cart'=>$cart->getValues(),
+		'address'=>$address->getValues()
+	]);
 });
 
 
