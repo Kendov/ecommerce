@@ -12,6 +12,7 @@ class User extends Model {
     const SECRET = "teste_secret_token";
     const SECRET_IV = "teste_secret_token_IV";
     const ERROR = "UserError";
+    const ERROR_REGISTER = "UserErrorRegister";
 
     public static function getFromSession(){
         $user = new User();
@@ -263,6 +264,8 @@ class User extends Model {
 
 
 
+
+    //error handling for User Login
     public static function setError($msg){
         $_SESSION[User::ERROR] = $msg;
     }
@@ -276,6 +279,40 @@ class User extends Model {
     public static function clearError(){
         $_SESSION[User::ERROR] = NULL;
     }
+    //******
+
+
+
+    
+    //error register duplicated. Same as error user
+    //error handling for register
+
+    public static function setErrorRegister($msg){
+        $_SESSION[User::ERROR_REGISTER] = $msg;
+    }
+
+    public static function getErrorRegister(){
+        $msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : "";
+        User::clearError();
+        return $msg;
+    }
+
+    public static function clearErrorRegister(){
+        $_SESSION[User::ERROR_REGISTER] = NULL;
+    }
+    /************************************/
+
+
+    public static function checkLoginExist($login){
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+            ":deslogin"=>$login
+        ]);
+
+        return (count($results) > 0);
+    }
+
 
     public static function getPasswordHash($password){
         return \password_hash($password, PASSWORD_DEFAULT, [
