@@ -3,10 +3,10 @@
 use \Hcode\Model\User;
 
 function formatPrice($vlprice){
-    if(is_float((float)$vlprice))
-        return number_format($vlprice, 2, ",", ".");
-    else
-        return 0.00;
+    if(!$vlprice > 0) $vlprice = 0;
+
+    return number_format($vlprice, 2, ",", ".");
+    
 }
 
 function debug_to_console($data) {

@@ -154,7 +154,7 @@ class User extends Model {
         ]);
     }
 
-    public static function getForgot($email){
+    public static function getForgot($email, $inadmin = true){
         $sql = new Sql();
         $results = $sql->select("
             SELECT * FROM tb_persons a 
@@ -192,7 +192,12 @@ class User extends Model {
 
                 $code = base64_encode($code);
 
-                $link = "http://www.ecommerce.com.br/admin/forgot/reset?code=$code";
+                if($inadmin === true) {
+                    $link = "http://www.ecommerce.com.br/admin/forgot/reset?code=$code";
+                }
+                else {
+                    $link = "http://www.ecommerce.com.br/forgot/reset?code=$code";
+                }
 
                 $mailer = new Mailer(
                     $data["desemail"], 
