@@ -13,6 +13,7 @@ class User extends Model {
     const SECRET_IV = "teste_secret_token_IV";
     const ERROR = "UserError";
     const ERROR_REGISTER = "UserErrorRegister";
+    const SUCCESS = "UserSuccess";
 
     public static function getFromSession(){
         $user = new User();
@@ -59,6 +60,8 @@ class User extends Model {
         }
 
         $data = $results[0];
+
+        
 
         if(\password_verify($password, $data["despassword"])){
             $user = new User();
@@ -130,14 +133,18 @@ class User extends Model {
         $this->setData($data);
     }
 
-    public function update(){
+    //if update will use password from database pass true
+    public function update($updtPassword = false){
         $sql = new Sql();
+
+        if($updtPassword)$password = $this->getdespassword();
+        else $password = User::getPasswordHash($this->getdespassword());
 
         $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", [
             ":iduser"=>$this->getiduser(),
             ":desperson"=>utf8_decode($this->getdesperson()),
             ":deslogin"=>$this->getdeslogin(),
-            ":despassword"=>User::getPasswordHash($this->getdespassword()),
+            ":despassword"=>$password,
             ":desemail"=>$this->getdesemail(),
             ":nrphone"=>$this->getnrphone(),
             ":inadmin"=>$this->getinadmin()
@@ -285,6 +292,24 @@ class User extends Model {
         $_SESSION[User::ERROR] = NULL;
     }
     //******
+
+
+
+    //*******
+    public static function setSuccess($msg){
+        $_SESSION[User::SUCCESS] = $msg;
+    }
+
+    public static function getSuccess(){
+        $msg = (isset($_SESSION[User::SUCCESS]) && $_SESSION[User::SUCCESS]) ? $_SESSION[User::SUCCESS] : "";
+        User::clearSuccess();
+        return $msg;
+    }
+
+    public static function clearSuccess(){
+        $_SESSION[User::SUCCESS] = NULL;
+    }
+    //*****
 
 
 
