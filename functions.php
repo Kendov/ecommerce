@@ -1,6 +1,7 @@
 <?php
 
 use \Hcode\Model\User;
+use \Hcode\Model\Address;
 
 function formatPrice($vlprice){
     if(!$vlprice > 0) $vlprice = 0;
@@ -24,6 +25,19 @@ function checkLogin($inadmin = true){
 function getUserName(){
     $user = User::getFromSession();
     return ($user->getdesperson()) ? utf8_decode($user->getdesperson()) : $user->getdeslogin();
+}
+
+
+
+function checkFields(array $fields, $zipcode){
+    foreach ($fields as $key => $value) {
+        if(!isset($_POST[$key]) || $_POST[$key] === ''){
+            Address::setMsgError($value);
+            if($zipcode) header("Location: /checkout?zipcode=$zipcode");
+            else header("Location: /checkout");
+            exit;
+        }
+    }
 }
 
 ?>

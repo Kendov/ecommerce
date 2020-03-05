@@ -128,16 +128,77 @@ $app->post("/cart/freight", function(){
 $app->get("/checkout", function(){
 	User::verifyLogin(false);
 	
-
+	$address = new Address();
 	$cart = Cart::getFromSession();
 
-	$address = new Address();
+	if(isset($_GET['zipcode'])){
+		$_GET['zipcode'] = $cart->getdeszipcode();
+	}
+
+	if(isset($_GET['zipcode'])){
+		$address->loadFromCEP($_GET['zipcode']);
+
+		$cart->setdeszipcode($_GET['zipcode']);
+		$cart->save();
+		$cart->getCalculateTotal();
+	}
+
+	//if value is null set to empty
+	$fields = [
+		'desaddress',
+		'descomplement',
+		'desdistrict',
+		'descity',
+		'desstate',
+		'descountry',
+		'deszipcode'
+	];
+	
+	foreach ($fields as $value) {
+		$get = "get". $value;
+		$set = "set" . $value;
+		if(!$address->$get()) $address->$set('');
+		
+	}
+	
+	//if(!$address->getdesaddress()) $address->setdesaddress('');
+	
 
 	$page = new Page();
 	$page->setTpl("checkout", [
 		'cart'=>$cart->getValues(),
-		'address'=>$address->getValues()
+		'address'=>$address->getValues(),
+		'products' => $cart->getProducts(),
+		'error' => Address::getMsgError()
 	]);
+});
+$app->post("/checkout", function(){
+	User::verifyLogin(false);
+
+	
+
+	checkFields([
+		'zipcode'=>'Informe o CEP',
+		'desaddress'=>'Informe o endereco',
+		'desdistrict'=>'Informe o bairro',
+		'descity'=>'Informe a cidade',
+		'desstate'=>'Informe o estado',
+		'descountry'=>'Informe o pais'
+	], $_POST['zipcode']);
+
+	$user = User::getFromSession();
+	
+	$address = new Address();
+
+	$_POST['deszipcode'] = $_POST['zipcode'];
+	$_POST['idperson'] = $user->getidperson();
+
+	$address->setData($_POST);
+	$address->save();
+
+	header("Location: /order");
+	exit;
+
 });
 
 
