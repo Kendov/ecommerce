@@ -133,7 +133,7 @@ $app->get("/checkout", function(){
 	$address = new Address();
 	$cart = Cart::getFromSession();
 
-	if(isset($_GET['zipcode'])){
+	if(!isset($_GET['zipcode'])){
 		$_GET['zipcode'] = $cart->getdeszipcode();
 	}
 
@@ -148,6 +148,7 @@ $app->get("/checkout", function(){
 	//if value is null set to empty
 	$fields = [
 		'desaddress',
+		'desnumber',
 		'descomplement',
 		'desdistrict',
 		'descity',
