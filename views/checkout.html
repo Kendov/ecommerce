@@ -113,6 +113,19 @@
 													</tr>
 												</tfoot>
 											</table>
+
+											<p id="billing_state_field" class="form-row form-row-first address-field validate-state" data-o_class="form-row form-row-first address-field validate-state">
+												
+												<input type="radio" id="method-pagseguro" name="payment-method" placeholder="" value="1" style="float: left; margin: 30px;">
+												<label for="method-pagseguro"><img style="max-height: 64px;" src="/resources/site/img/logo-pagseguro.png" alt=""></label>
+											</p>
+
+											<p id="billing_state_field" class="form-row form-row-first address-field validate-state" data-o_class="form-row form-row-first address-field validate-state">
+												
+												<input type="radio" checked="checked" id="method-paypal" name="payment-method" placeholder="" value="2" style="float: left; margin: 30px;">
+												<label for="method-paypal"><img style="max-height: 64px;" src="/resources/site/img/logo-paypal.png" alt=""></label>
+											</p>
+
 											<div id="payment">
 												<div class="form-row place-order">
 													<input type="submit" data-value="Place order" value="Continuar" id="place_order" name="woocommerce_checkout_place_order" class="button alt">
